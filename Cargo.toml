@@ -23,3 +23,10 @@ thiserror = "2"
 regex = "1"
 urlencoding = "2"
 self_update = { version = "0.44", default-features = false, features = ["reqwest", "rustls", "archive-tar", "archive-zip", "compression-flate2"] }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
