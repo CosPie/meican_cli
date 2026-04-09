@@ -110,6 +110,9 @@ enum Commands {
         #[arg(long, default_value = "30")]
         days: u32,
     },
+
+    /// Update meican to the latest version
+    Update,
 }
 
 #[tokio::main]
@@ -135,5 +138,9 @@ async fn main() -> Result<()> {
             commands::order::cancel_order(meal, id.as_deref()).await
         }
         Commands::History { days } => commands::history::history(days, table).await,
+        Commands::Update => {
+            commands::update::self_update()?;
+            Ok(())
+        }
     }
 }
