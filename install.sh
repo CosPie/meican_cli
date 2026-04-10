@@ -48,15 +48,29 @@ get_target() {
     esac
 }
 
-# Get latest version from GitHub API
+# Get latest version from GitHub releases redirect (avoids API rate limit)
 get_latest_version() {
+    local version=""
+
+    # Method 1: Use redirect from /releases/latest (no API rate limit)
     if command -v curl > /dev/null 2>&1; then
-        curl -sL "https://api.github.com/repos/${REPO}/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/'
+        version=$(curl -sI "https://github.com/${REPO}/releases/latest" 2>/dev/null | grep -i '^location:' | sed -E 's|.*/tag/([^ \r\n]+).*|\1|')
     elif command -v wget > /dev/null 2>&1; then
-        wget -qO- "https://api.github.com/repos/${REPO}/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/'
+        version=$(wget --spider -S "https://github.com/${REPO}/releases/latest" 2>&1 | grep -i '^\s*location:' | sed -E 's|.*/tag/([^ \r\n]+).*|\1|')
     else
         error "curl or wget is required"
     fi
+
+    # Method 2: Fallback to GitHub API
+    if [ -z "$version" ]; then
+        if command -v curl > /dev/null 2>&1; then
+            version=$(curl -sL "https://api.github.com/repos/${REPO}/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+        elif command -v wget > /dev/null 2>&1; then
+            version=$(wget -qO- "https://api.github.com/repos/${REPO}/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+        fi
+    fi
+
+    echo "$version"
 }
 
 # Download file
