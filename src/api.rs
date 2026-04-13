@@ -167,8 +167,7 @@ impl MeicanClient {
 
         let has_play_session =
             cookies.contains("PLAY_SESSION=") && !cookies.contains("PLAY_SESSION=;");
-        let has_error =
-            cookies.contains("PLAY_ERRORS=") && !cookies.contains("PLAY_ERRORS=;");
+        let has_error = cookies.contains("PLAY_ERRORS=") && !cookies.contains("PLAY_ERRORS=;");
 
         // Check for encoded error in PLAY_FLASH
         if let Some(flash_start) = cookies.find("PLAY_FLASH=\"") {
@@ -208,7 +207,10 @@ impl MeicanClient {
             &[
                 ("beginDate", begin_date),
                 ("endDate", end_date),
-                ("withOrderDetail", if with_order_detail { "true" } else { "false" }),
+                (
+                    "withOrderDetail",
+                    if with_order_detail { "true" } else { "false" },
+                ),
             ],
         )
         .await
