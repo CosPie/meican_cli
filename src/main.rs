@@ -65,6 +65,10 @@ enum Commands {
         /// Tab unique ID (advanced, overrides meal)
         #[arg(long)]
         tab: Option<String>,
+
+        /// Target date (YYYY-MM-DD), defaults to today
+        #[arg(long)]
+        date: Option<String>,
     },
 
     /// List available restaurants for a meal slot
@@ -75,6 +79,10 @@ enum Commands {
         /// Tab unique ID (advanced, overrides meal)
         #[arg(long)]
         tab: Option<String>,
+
+        /// Target date (YYYY-MM-DD), defaults to today
+        #[arg(long)]
+        date: Option<String>,
     },
 
     /// List delivery addresses
@@ -92,6 +100,10 @@ enum Commands {
         /// Dish ID to order
         #[arg(long)]
         dish: String,
+
+        /// Target date (YYYY-MM-DD), defaults to today
+        #[arg(long)]
+        date: Option<String>,
     },
 
     /// Cancel an existing order
@@ -126,13 +138,13 @@ async fn main() -> Result<()> {
         Commands::Status => auth::status(),
         Commands::Today => commands::menu::today(table).await,
         Commands::Calendar { begin, end } => commands::menu::calendar(&begin, &end, table).await,
-        Commands::Dishes { meal, tab } => commands::menu::dishes(meal, tab.as_deref(), table).await,
-        Commands::Restaurants { meal, tab } => {
-            commands::menu::restaurants(meal, tab.as_deref(), table).await
+        Commands::Dishes { meal, tab, date } => commands::menu::dishes(meal, tab.as_deref(), date.as_deref(), table).await,
+        Commands::Restaurants { meal, tab, date } => {
+            commands::menu::restaurants(meal, tab.as_deref(), date.as_deref(), table).await
         }
         Commands::Addresses => commands::menu::addresses(table).await,
-        Commands::Order { meal, tab, dish } => {
-            commands::order::add_order(meal, tab.as_deref(), &dish, table).await
+        Commands::Order { meal, tab, dish, date } => {
+            commands::order::add_order(meal, tab.as_deref(), &dish, date.as_deref(), table).await
         }
         Commands::Cancel { meal, id } => {
             commands::order::cancel_order(meal, id.as_deref()).await
