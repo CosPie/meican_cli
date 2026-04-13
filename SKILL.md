@@ -88,6 +88,7 @@ meican --table history --days 30
 ---
 
 ### 流程 E：智能周餐规划（基于历史偏好批量点一周午餐晚餐）
+没有特别说明，默认为本周周一至周五的午餐和晚餐。如果今天是周六日，则默认为下周周一至周五。
 
 > **说明：** `meican order --dish <ID> --date <YYYY-MM-DD>` 支持提前下单，无需当天执行。`meican dishes --date <YYYY-MM-DD>` 可查看指定日期可选菜品，`meican calendar` 可查看未来日期餐次状态。本流程可在任意一天完成整周下单。
 
